@@ -1,15 +1,13 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using EmployeeManagementTask.Api.Requests;
 using EmployeeManagementTask.Api.Responses;
 using EmployeeManagementTask.Application.Handlers.Commands.CreateEmployee;
-using EmployeeManagementTask.Application.Handlers.Commands.Queries.GetEmployeeById;
-using EmployeeManagementTask.Domain.Entites;
+using EmployeeManagementTask.Application.Handlers.Commands.DeleteEmployee;
+using EmployeeManagementTask.Application.Handlers.Commands.UpdateEmployee;
+using EmployeeManagementTask.Application.Handlers.Queries.GetEmployeeById;
+using EmployeeManagementTask.Application.Handlers.Queries.GetEmployees;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Threading;
 
 namespace EmployeeManagementTask.Api.Controllers;
 
@@ -36,6 +34,16 @@ public class EmployeesController : ControllerBase
         return Ok(_mapper.Map<CreateEmployeeResponse>(result));
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetEmployeesAsync([FromQuery] GetEmployeesRequest request, CancellationToken cancellationToken)
+    {
+        var query = _mapper.Map<GetEmployeesQuery>(request);
+
+        var result = await _mediator.Send(query, cancellationToken);
+
+        return Ok(result.Employees);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetEmployeeByIdAsync([FromRoute] int id, CancellationToken cancellationToken)
     {
@@ -49,4 +57,30 @@ public class EmployeesController : ControllerBase
         return Ok(_mapper.Map<GetEmployeeByIdResponse>(result));
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateEmployeeAsync(
+        [FromRoute] int id,
+        [FromBody] UpdateEmployeeRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = _mapper.Map<UpdateEmployeeCommand>(request);
+        command.Id = id;
+
+        var result = await _mediator.Send(command, cancellationToken);
+
+        return Ok(_mapper.Map<UpdateEmployeeResponse>(result));
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteEmployeeAsync([FromRoute] int id, CancellationToken cancellationToken)
+    {
+        var command = new DeleteEmployeeCommand
+        {
+            Id = id
+        };
+
+        var result = await _mediator.Send(command, cancellationToken);
+
+        return Ok();
+    }
 }

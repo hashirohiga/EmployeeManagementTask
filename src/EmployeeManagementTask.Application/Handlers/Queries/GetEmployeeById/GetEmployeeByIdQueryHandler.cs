@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
+using EmployeeManagementTask.Domain.Entites;
 using EmployeeManagementTask.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace EmployeeManagementTask.Application.Handlers.Commands.Queries.GetEmployeeById;
+namespace EmployeeManagementTask.Application.Handlers.Queries.GetEmployeeById;
 
 public class GetEmployeeByIdQueryHandler : IRequestHandler<GetEmployeeByIdQuery, GetEmployeeByIdQueryResult>
 {
@@ -18,8 +19,13 @@ public class GetEmployeeByIdQueryHandler : IRequestHandler<GetEmployeeByIdQuery,
 
     public async Task<GetEmployeeByIdQueryResult> Handle(GetEmployeeByIdQuery query, CancellationToken cancellationToken)
     {
-        var user = await _context.Employees.FirstOrDefaultAsync(u => u.Id == query.Id);
+        var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Id == query.Id, cancellationToken);
 
-        return _mapper.Map<GetEmployeeByIdQueryResult>(user);
+        if (employee is null)
+        {
+            throw new Exception("Сотрудник с таким идентификатором не найден");
+        }
+
+        return _mapper.Map<GetEmployeeByIdQueryResult>(employee);
     }
 }
