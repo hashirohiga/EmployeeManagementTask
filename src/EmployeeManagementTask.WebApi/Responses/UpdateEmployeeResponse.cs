@@ -1,6 +1,6 @@
-﻿namespace EmployeeManagementTask.Application.Handlers.Commands.Queries.GetEmployeeById;
+﻿namespace EmployeeManagementTask.Api.Responses;
 
-public class GetEmployeeByIdQueryResult
+public class UpdateEmployeeResponse
 {
     public int Id { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace EmployeeManagementTask.Application.Handlers.Commands.Queries.GetEmployeeById;
+namespace EmployeeManagementTask.Application.Handlers.Queries.GetEmployeeById;
 
 public class GetEmployeeByIdQuery : IRequest<GetEmployeeByIdQueryResult>
 {
