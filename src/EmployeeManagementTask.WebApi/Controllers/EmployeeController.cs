@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EmployeeManagementTask.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/employees")]
 public class EmployeesController : ControllerBase
 {
     private readonly IMapper _mapper;

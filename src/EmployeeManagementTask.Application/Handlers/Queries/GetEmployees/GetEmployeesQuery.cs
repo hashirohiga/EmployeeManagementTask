@@ -11,4 +11,8 @@ public class GetEmployeesQuery : IRequest<GetEmployeesQueryResult>
     public DateTime? DateOfBirth { get; set; }
 
     public DateTime? HireDate { get; set; }
+
+    public string? SortBy { get; set; }
+
+    public string? SortDir { get; set; }
 }
