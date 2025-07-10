@@ -44,6 +44,22 @@ public class GetEmployeesQueryHandler : IRequestHandler<GetEmployeesQuery, GetEm
             dbQuery = dbQuery.Where(e => e.DateOfBirth >= birthDate && e.DateOfBirth < birthDate.AddDays(1));
         }
 
+        if (!string.IsNullOrWhiteSpace(query.SortBy))
+        {
+            var isAsc = string.Equals(query.SortDir, "asc", StringComparison.OrdinalIgnoreCase);
+
+            dbQuery = query.SortBy.ToLower() switch
+            {
+                "id" => isAsc ? dbQuery.OrderBy(e => e.Id) : dbQuery.OrderByDescending(e => e.Id),
+                "department" => isAsc ? dbQuery.OrderBy(e => e.Department) : dbQuery.OrderByDescending(e => e.Department),
+                "fullname" => isAsc ? dbQuery.OrderBy(e => e.FullName) : dbQuery.OrderByDescending(e => e.FullName),
+                "dateofbirth" => isAsc ? dbQuery.OrderBy(e => e.DateOfBirth) : dbQuery.OrderByDescending(e => e.DateOfBirth),
+                "hiredate" => isAsc ? dbQuery.OrderBy(e => e.HireDate) : dbQuery.OrderByDescending(e => e.HireDate),
+                "salary" => isAsc ? dbQuery.OrderBy(e => e.Salary) : dbQuery.OrderByDescending(e => e.Salary),
+                _ => dbQuery
+            };
+        }
+
         var employees = await dbQuery.ToListAsync(cancellationToken);
 
         return _mapper.Map<GetEmployeesQueryResult>(employees);

@@ -23,6 +23,16 @@ builder.Services.AddAutoMapper(
     typeof(EmployeeManagementTask.Api.Mappings.EmployeeMappingProfile)
 );
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var server = Environment.GetEnvironmentVariable("DB_SERVER");
 var database = Environment.GetEnvironmentVariable("DB_DATABASE");
 var user = Environment.GetEnvironmentVariable("DB_USER");
@@ -47,8 +57,15 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+app.UseRouting();
+
 app.UseHttpsRedirection();
 
 app.MapControllers();
+
+app.UseCors();
 
 app.Run();
